@@ -309,16 +309,6 @@
                     <input type="range" id="qr-size" min="150" max="400" value="250" oninput="updateSizeLabel()">
                     <span class="size-value" id="size-label">250px</span>
                 </div>
-                <div class="option-row">
-                    <label>Color:</label>
-                    <input type="color" id="qr-fgcolor" value="#000000">
-                    <span>QR Color</span>
-                </div>
-                <div class="option-row">
-                    <label>BG:</label>
-                    <input type="color" id="qr-bgcolor" value="#ffffff">
-                    <span>Background</span>
-                </div>
             </div>
             
             <button class="btn-primary" onclick="generateQR()">Generate QR Code</button>
@@ -401,11 +391,9 @@
             if (!content) return;
             
             const size = parseInt(document.getElementById('qr-size').value);
-            const fgcolor = document.getElementById('qr-fgcolor').value.replace('#', '');
-            const bgcolor = document.getElementById('qr-bgcolor').value.replace('#', '');
             
-            // Use Google Chart API
-            currentQRUrl = 'https://chart.googleapis.com/chart?cht=qr&chl=' + encodeURIComponent(content) + '&chs=' + size + 'x' + size + '&choe=UTF-8&chld=L|0&chf=a,s,' + bgcolor + ':bg,s,' + fgcolor;
+            // Use QRServer API (reliable)
+            currentQRUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=' + size + 'x' + size + '&data=' + encodeURIComponent(content);
             
             document.getElementById('qrimg').src = currentQRUrl;
             document.getElementById('preview-section').style.display = 'block';

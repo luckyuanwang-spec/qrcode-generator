@@ -6,8 +6,7 @@
     <title>Free QR Code Generator - Create QR Codes Online</title>
     <meta name="description" content="Free online QR code generator. Create QR codes for URLs, text, WiFi, vCards, and more. No registration required. Download as PNG.">
     <meta name="keywords" content="qr code generator, free qr code, create qr code, qr code maker, online qr generator">
-    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
-    <style>
+    <script>
         * {
             margin: 0;
             padding: 0;
@@ -447,25 +446,19 @@
         let currentQRData = '';
         
         function switchType(type) {
-            // Update tabs
             document.querySelectorAll('.type-tab').forEach(tab => tab.classList.remove('active'));
             event.target.classList.add('active');
-            
-            // Update content
             document.querySelectorAll('.qr-type-content').forEach(content => content.classList.remove('active'));
             document.getElementById(type + '-content').classList.add('active');
-            
             currentType = type;
         }
         
         function updateSizeLabel() {
-            const size = document.getElementById('qr-size').value;
-            document.getElementById('size-label').textContent = size + 'px';
+            document.getElementById('size-label').textContent = document.getElementById('qr-size').value + 'px';
         }
         
         function getQRContent() {
             let content = '';
-            
             switch(currentType) {
                 case 'url':
                     content = document.getElementById('url-input').value.trim();
@@ -477,10 +470,7 @@
                     const ssid = document.getElementById('wifi-ssid').value.trim();
                     const password = document.getElementById('wifi-password').value.trim();
                     const security = document.getElementById('wifi-security').value;
-                    if (!ssid) {
-                        alert('Please enter WiFi network name (SSID)');
-                        return null;
-                    }
+                    if (!ssid) { alert('Please enter WiFi network name (SSID)'); return null; }
                     content = `WIFI:T:${security};S:${ssid};P:${password};;`;
                     break;
                 case 'vcard':
@@ -489,7 +479,6 @@
                     const email = document.getElementById('vcard-email').value.trim();
                     const org = document.getElementById('vcard-org').value.trim();
                     const url = document.getElementById('vcard-url').value.trim();
-                    
                     content = `BEGIN:VCARD\nVERSION:3.0`;
                     if (name) content += `\nFN:${name}`;
                     if (org) content += `\nORG:${org}`;
@@ -502,23 +491,14 @@
                     let emailContent = `mailto:${document.getElementById('email-to').value.trim()}`;
                     const subject = document.getElementById('email-subject').value.trim();
                     const body = document.getElementById('email-body').value.trim();
-                    
                     const params = [];
                     if (subject) params.push(`subject=${encodeURIComponent(subject)}`);
                     if (body) params.push(`body=${encodeURIComponent(body)}`);
-                    
-                    if (params.length > 0) {
-                        emailContent += '?' + params.join('&');
-                    }
+                    if (params.length > 0) emailContent += '?' + params.join('&');
                     content = emailContent;
                     break;
             }
-            
-            if (!content) {
-                alert('Please enter content for the QR code');
-                return null;
-            }
-            
+            if (!content) { alert('Please enter content for the QR code'); return null; }
             return content;
         }
         
@@ -528,102 +508,44 @@
             
             currentQRData = content;
             const size = parseInt(document.getElementById('qr-size').value);
-            const fgcolor = document.getElementById('qr-fgcolor').value;
-            const bgcolor = document.getElementById('qr-bgcolor').value;
+            const fgcolor = document.getElementById('qr-fgcolor').value.replace('#', '');
+            const bgcolor = document.getElementById('qr-bgcolor').value.replace('#', '');
             
+            // Use Google Chart API
             const qrcodeDiv = document.getElementById('qrcode');
-            qrcodeDiv.innerHTML = '';
+            qrcodeDiv.innerHTML = `<img src="https://chart.googleapis.com/chart?cht=qr&chl=${encodeURIComponent(content)}&chs=${size}x${size}&choe=UTF-8&chld=L|0&chf=a,s,${bgcolor}:bg,s,${fgcolor}" alt="QR Code" style="width:${size}px;height:${size}px;border-radius:10px;">`;
             
-            // Use qrcode-generator library
-            const qr = qrcode(0, 'M');
-            qr.addData(content);
-            qr.make();
-            
-            // Create SVG with colors
-            const svgString = qr.createSvgTag({
-                cellSize: Math.floor(size / qr.getModuleCount()),
-                margin: 4,
-                scalable: true
-            });
-            
-            // Replace colors in SVG
-            const coloredSvg = svgString
-                .replace(/fill="#000000"/g, `fill="${fgcolor}"`)
-                .replace(/fill="#ffffff"/g, `fill="${bgcolor}"`);
-            
-            qrcodeDiv.innerHTML = coloredSvg;
             document.getElementById('preview-section').style.display = 'block';
         }
         
         function downloadQR(format) {
-            if (!currentQRData) {
-                alert('Please generate a QR code first');
-                return;
-            }
-            
+            if (!currentQRData) { alert('Please generate a QR code first'); return; }
             const size = parseInt(document.getElementById('qr-size').value);
-            const fgcolor = document.getElementById('qr-fgcolor').value;
-            const bgcolor = document.getElementById('qr-bgcolor').value;
+            const fgcolor = document.getElementById('qr-fgcolor').value.replace('#', '');
+            const bgcolor = document.getElementById('qr-bgcolor').value.replace('#', '');
             
-            const qr = qrcode(0, 'M');
-            qr.addData(currentQRData);
-            qr.make();
+            const url = `https://chart.googleapis.com/chart?cht=qr&chl=${encodeURIComponent(currentQRData)}&chs=${size}x${size}&choe=UTF-8&chld=L|0&chf=a,s,${bgcolor}:bg,s,${fgcolor}`;
             
-            if (format === 'svg') {
-                let svgString = qr.createSvgTag({
-                    cellSize: Math.floor(size / qr.getModuleCount()),
-                    margin: 4
-                });
-                svgString = svgString
-                    .replace(/fill="#000000"/g, `fill="${fgcolor}"`)
-                    .replace(/fill="#ffffff"/g, `fill="${bgcolor}"`);
-                
-                const blob = new Blob([svgString], { type: 'image/svg+xml' });
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.download = 'qrcode.svg';
-                link.href = url;
-                link.click();
-                URL.revokeObjectURL(url);
-            } else if (format === 'png') {
-                // Create canvas for PNG download
-                const canvas = document.createElement('canvas');
-                const ctx = canvas.getContext('2d');
-                const cellSize = Math.floor(size / qr.getModuleCount());
-                const margin = 4;
-                const totalSize = cellSize * qr.getModuleCount() + margin * 2;
-                
-                canvas.width = totalSize;
-                canvas.height = totalSize;
-                
-                // Draw background
-                ctx.fillStyle = bgcolor;
-                ctx.fillRect(0, 0, totalSize, totalSize);
-                
-                // Draw QR code
-                ctx.fillStyle = fgcolor;
-                for (let row = 0; row < qr.getModuleCount(); row++) {
-                    for (let col = 0; col < qr.getModuleCount(); col++) {
-                        if (qr.isDark(row, col)) {
-                            ctx.fillRect(
-                                margin + col * cellSize,
-                                margin + row * cellSize,
-                                cellSize,
-                                cellSize
-                            );
-                        }
-                    }
-                }
-                
-                // Download
-                const link = document.createElement('a');
-                link.download = 'qrcode.png';
-                link.href = canvas.toDataURL('image/png');
-                link.click();
+            if (format === 'png') {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    canvas.width = size;
+                    canvas.height = size;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(img, 0, 0, size, size);
+                    const link = document.createElement('a');
+                    link.download = 'qrcode.png';
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                };
+                img.src = url;
+            } else {
+                window.open(url, '_blank');
             }
         }
         
-        // Auto-generate on Enter
+        // Enter key support
         ['url-input', 'text-input', 'wifi-ssid', 'wifi-password', 'vcard-name', 'vcard-phone', 'vcard-email', 'vcard-org', 'vcard-url', 'email-to', 'email-subject', 'email-body'].forEach(id => {
             const el = document.getElementById(id);
             if (el) {

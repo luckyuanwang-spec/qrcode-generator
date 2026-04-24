@@ -339,73 +339,8 @@
         </footer>
     </div>
     
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script>
-        // QR Code Generator - Pure JavaScript
-        (function() {
-            var QRCode = function(typeNumber, errorCorrectionLevel) {
-                this.typeNumber = typeNumber;
-                this.errorCorrectionLevel = errorCorrectionLevel;
-                this.modules = [];
-                this.moduleCount = 0;
-            };
-            
-            QRCode.prototype = {
-                addData: function(data) {
-                    this.data = data;
-                },
-                make: function() {
-                    this.moduleCount = this.typeNumber * 4 + 17;
-                    this.modules = [];
-                    for (var row = 0; row < this.moduleCount; row++) {
-                        this.modules[row] = [];
-                        for (var col = 0; col < this.moduleCount; col++) {
-                            this.modules[row][col] = false;
-                        }
-                    }
-                    // Simplified QR pattern
-                    this.makeImpl();
-                },
-                makeImpl: function() {
-                    var size = this.moduleCount;
-                    // Finder patterns (corners)
-                    this.makeFinderPattern(0, 0);
-                    this.makeFinderPattern(size - 7, 0);
-                    this.makeFinderPattern(0, size - 7);
-                    // Add data pattern (simplified)
-                    var data = this.data;
-                    var hash = 0;
-                    for (var i = 0; i < data.length; i++) {
-                        hash = ((hash << 5) - hash) + data.charCodeAt(i);
-                        hash = hash & hash;
-                    }
-                    // Fill data area with pseudo-random pattern based on content
-                    for (var row = 9; row < size - 8; row++) {
-                        for (var col = 9; col < size - 8; col++) {
-                            var val = Math.abs(Math.sin((row * size + col + hash) * 0.5) * 1000);
-                            this.modules[row][col] = val % 2 === 1;
-                        }
-                    }
-                },
-                makeFinderPattern: function(row, col) {
-                    for (var r = 0; r < 7; r++) {
-                        for (var c = 0; c < 7; c++) {
-                            var isDark = (r === 0 || r === 6 || c === 0 || c === 6) ||
-                                         (r >= 2 && r <= 4 && c >= 2 && c <= 4);
-                            this.modules[row + r][col + c] = isDark;
-                        }
-                    }
-                },
-                isDark: function(row, col) {
-                    return this.modules[row] && this.modules[row][col];
-                },
-                getModuleCount: function() {
-                    return this.moduleCount;
-                }
-            };
-            
-            window.QRCode = QRCode;
-        })();
-        
         let currentType = 'url';
         let currentQRData = '';
         
@@ -471,38 +406,22 @@
             const fgcolor = document.getElementById('qr-fgcolor').value;
             const bgcolor = document.getElementById('qr-bgcolor').value;
             
-            // Generate QR
-            const qr = new QRCode(5, 'M');
-            qr.addData(content);
-            qr.make();
-            
-            // Draw on canvas
             const canvas = document.getElementById('qrcanvas');
-            const ctx = canvas.getContext('2d');
-            const moduleCount = qr.getModuleCount();
-            const cellSize = Math.floor(displaySize / moduleCount);
-            const canvasSize = cellSize * moduleCount;
             
-            canvas.width = canvasSize;
-            canvas.height = canvasSize;
-            canvas.style.width = displaySize + 'px';
-            canvas.style.height = displaySize + 'px';
-            
-            // Fill background
-            ctx.fillStyle = bgcolor;
-            ctx.fillRect(0, 0, canvasSize, canvasSize);
-            
-            // Draw QR modules
-            ctx.fillStyle = fgcolor;
-            for (let row = 0; row < moduleCount; row++) {
-                for (let col = 0; col < moduleCount; col++) {
-                    if (qr.isDark(row, col)) {
-                        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
-                    }
+            QRCode.toCanvas(canvas, content, {
+                width: displaySize,
+                margin: 2,
+                color: {
+                    dark: fgcolor,
+                    light: bgcolor
                 }
-            }
-            
-            document.getElementById('preview-section').style.display = 'block';
+            }, function(error) {
+                if (error) {
+                    alert('Error generating QR code: ' + error);
+                    return;
+                }
+                document.getElementById('preview-section').style.display = 'block';
+            });
         }
         
         function downloadQR(format) {

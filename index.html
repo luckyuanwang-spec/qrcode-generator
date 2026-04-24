@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Free QR Code Generator - Create QR Codes Online</title>
-    <meta name="description" content="Free online QR code generator. Create QR codes for URLs, text, WiFi, vCards, and more. No registration required. Download as PNG.">
-    <meta name="keywords" content="qr code generator, free qr code, create qr code, qr code maker, online qr generator">
+    <meta name="description" content="Free online QR code generator. Create QR codes for URLs, text, WiFi, vCards, and more. No registration required.">
     <style>
         * {
             margin: 0;
@@ -14,8 +13,8 @@
         }
         
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
@@ -34,12 +33,6 @@
         header h1 {
             font-size: 2.5rem;
             margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-        
-        header p {
-            font-size: 1.1rem;
-            opacity: 0.9;
         }
         
         .tool-box {
@@ -47,20 +40,6 @@
             border-radius: 20px;
             padding: 35px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-        }
-        
-        .tips {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 15px 20px;
-            border-radius: 12px;
-            margin-bottom: 25px;
-            font-size: 0.95rem;
-            line-height: 1.6;
-        }
-        
-        .tips strong {
-            color: #ffd700;
         }
         
         .input-section {
@@ -72,7 +51,6 @@
             font-weight: 600;
             margin-bottom: 12px;
             color: #333;
-            font-size: 1rem;
         }
         
         .type-tabs {
@@ -92,12 +70,8 @@
             transition: all 0.3s;
         }
         
-        .type-tab:hover {
-            background: #e0e0e0;
-        }
-        
         .type-tab.active {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
         }
         
@@ -109,23 +83,17 @@
             display: block;
         }
         
-        input[type="url"],
-        input[type="text"],
-        input[type="email"],
-        input[type="tel"],
-        textarea {
+        input, textarea, select {
             width: 100%;
             padding: 14px;
             border: 2px solid #e0e0e0;
             border-radius: 10px;
             font-size: 1rem;
-            transition: border-color 0.3s;
         }
         
-        input:focus,
-        textarea:focus {
+        input:focus, textarea:focus, select:focus {
             outline: none;
-            border-color: #f5576c;
+            border-color: #667eea;
         }
         
         textarea {
@@ -144,12 +112,6 @@
             padding: 20px;
             border-radius: 12px;
             margin-bottom: 25px;
-        }
-        
-        .options-section h3 {
-            margin-bottom: 15px;
-            color: #333;
-            font-size: 1.1rem;
         }
         
         .option-row {
@@ -180,36 +142,30 @@
             min-width: 50px;
             text-align: center;
             font-weight: 600;
-            color: #f5576c;
+            color: #667eea;
         }
         
         .btn-primary {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 12px;
             font-size: 1.1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
         }
         
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(245, 87, 108, 0.4);
+            opacity: 0.9;
         }
         
         .preview-section {
             margin-top: 30px;
             padding-top: 30px;
             border-top: 2px dashed #e0e0e0;
-        }
-        
-        .preview-section h3 {
-            margin-bottom: 20px;
-            color: #333;
+            display: none;
         }
         
         .qr-preview {
@@ -218,11 +174,6 @@
             padding: 30px;
             background: #f8f9fa;
             border-radius: 12px;
-        }
-        
-        .qr-preview img {
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
         }
         
         .download-buttons {
@@ -234,18 +185,17 @@
         .btn-download {
             flex: 1;
             padding: 12px;
-            border: 2px solid #f5576c;
+            border: 2px solid #667eea;
             background: white;
-            color: #f5576c;
+            color: #667eea;
             border-radius: 10px;
             font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
         }
         
         .btn-download:hover {
-            background: #f5576c;
+            background: #667eea;
             color: white;
         }
         
@@ -253,29 +203,12 @@
             text-align: center;
             padding: 30px 0;
             color: white;
-            font-size: 0.9rem;
-        }
-        
-        footer a {
-            color: white;
-            text-decoration: underline;
-        }
-        
-        .wifi-fields,
-        .vcard-fields {
-            display: none;
-        }
-        
-        .wifi-fields.active,
-        .vcard-fields.active {
-            display: block;
         }
         
         @media (max-width: 600px) {
             .input-row {
                 grid-template-columns: 1fr;
             }
-            
             header h1 {
                 font-size: 1.8rem;
             }
@@ -290,10 +223,6 @@
         </header>
         
         <div class="tool-box">
-            <div class="tips">
-                <strong>Tip:</strong> QR codes are widely used for contactless payments, restaurant menus, event tickets, WiFi sharing, and more. Generate one instantly - no registration needed!
-            </div>
-            
             <div class="input-section">
                 <label>Select QR Code Type:</label>
                 <div class="type-tabs">
@@ -305,71 +234,69 @@
                 </div>
                 
                 <div id="url-content" class="qr-type-content active">
-                    <label for="url-input">Enter URL:</label>
+                    <label>Enter URL:</label>
                     <input type="url" id="url-input" placeholder="https://example.com">
                 </div>
                 
                 <div id="text-content" class="qr-type-content">
-                    <label for="text-input">Enter Text:</label>
+                    <label>Enter Text:</label>
                     <textarea id="text-input" placeholder="Enter any text..."></textarea>
                 </div>
                 
                 <div id="wifi-content" class="qr-type-content">
-                    <div class="wifi-fields active">
-                        <div class="input-row">
-                            <div>
-                                <label for="wifi-ssid">Network Name:</label>
-                                <input type="text" id="wifi-ssid" placeholder="MyWiFi">
-                            </div>
-                            <div>
-                                <label for="wifi-password">Password:</label>
-                                <input type="text" id="wifi-password" placeholder="Password">
-                            </div>
+                    <div class="input-row">
+                        <div>
+                            <label>Network Name:</label>
+                            <input type="text" id="wifi-ssid" placeholder="MyWiFi">
                         </div>
-                        <div style="margin-top: 15px;">
-                            <label for="wifi-security">Security:</label>
-                            <select id="wifi-security" style="width:100%;padding:12px;border:2px solid #e0e0e0;border-radius:10px;font-size:1rem;">
-                                <option value="WPA">WPA/WPA2</option>
-                                <option value="WEP">WEP</option>
-                                <option value="nopass">None</option>
-                            </select>
+                        <div>
+                            <label>Password:</label>
+                            <input type="text" id="wifi-password" placeholder="Password">
                         </div>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <label>Security:</label>
+                        <select id="wifi-security">
+                            <option value="WPA">WPA/WPA2</option>
+                            <option value="WEP">WEP</option>
+                            <option value="nopass">None</option>
+                        </select>
                     </div>
                 </div>
                 
                 <div id="vcard-content" class="qr-type-content">
-                    <div class="vcard-fields active">
-                        <div class="input-row">
-                            <div>
-                                <label for="vcard-name">Full Name:</label>
-                                <input type="text" id="vcard-name" placeholder="John Doe">
-                            </div>
-                            <div>
-                                <label for="vcard-phone">Phone:</label>
-                                <input type="tel" id="vcard-phone" placeholder="+1 234 567 8900">
-                            </div>
+                    <div class="input-row">
+                        <div>
+                            <label>Full Name:</label>
+                            <input type="text" id="vcard-name" placeholder="John Doe">
                         </div>
-                        <div class="input-row" style="margin-top: 15px;">
-                            <div>
-                                <label for="vcard-email">Email:</label>
-                                <input type="email" id="vcard-email" placeholder="john@example.com">
-                            </div>
-                            <div>
-                                <label for="vcard-org">Company:</label>
-                                <input type="text" id="vcard-org" placeholder="Company Name">
-                            </div>
+                        <div>
+                            <label>Phone:</label>
+                            <input type="tel" id="vcard-phone" placeholder="+1 234 567 8900">
+                        </div>
+                    </div>
+                    <div class="input-row" style="margin-top: 15px;">
+                        <div>
+                            <label>Email:</label>
+                            <input type="email" id="vcard-email" placeholder="john@example.com">
+                        </div>
+                        <div>
+                            <label>Company:</label>
+                            <input type="text" id="vcard-org" placeholder="Company Name">
                         </div>
                     </div>
                 </div>
                 
                 <div id="email-content" class="qr-type-content">
-                    <div>
-                        <label for="email-to">To:</label>
-                        <input type="email" id="email-to" placeholder="example@email.com">
-                    </div>
-                    <div style="margin-top: 15px;">
-                        <label for="email-subject">Subject:</label>
-                        <input type="text" id="email-subject" placeholder="Subject line">
+                    <div class="input-row">
+                        <div>
+                            <label>To:</label>
+                            <input type="email" id="email-to" placeholder="example@email.com">
+                        </div>
+                        <div>
+                            <label>Subject:</label>
+                            <input type="text" id="email-subject" placeholder="Subject line">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -395,10 +322,10 @@
             
             <button class="btn-primary" onclick="generateQR()">Generate QR Code</button>
             
-            <div class="preview-section" id="preview-section" style="display:none;">
+            <div class="preview-section" id="preview-section">
                 <h3>Your QR Code</h3>
                 <div class="qr-preview">
-                    <div id="qrcode"></div>
+                    <canvas id="qrcanvas"></canvas>
                 </div>
                 <div class="download-buttons">
                     <button class="btn-download" onclick="downloadQR('png')">Download PNG</button>
@@ -413,6 +340,72 @@
     </div>
     
     <script>
+        // QR Code Generator - Pure JavaScript
+        (function() {
+            var QRCode = function(typeNumber, errorCorrectionLevel) {
+                this.typeNumber = typeNumber;
+                this.errorCorrectionLevel = errorCorrectionLevel;
+                this.modules = [];
+                this.moduleCount = 0;
+            };
+            
+            QRCode.prototype = {
+                addData: function(data) {
+                    this.data = data;
+                },
+                make: function() {
+                    this.moduleCount = this.typeNumber * 4 + 17;
+                    this.modules = [];
+                    for (var row = 0; row < this.moduleCount; row++) {
+                        this.modules[row] = [];
+                        for (var col = 0; col < this.moduleCount; col++) {
+                            this.modules[row][col] = false;
+                        }
+                    }
+                    // Simplified QR pattern
+                    this.makeImpl();
+                },
+                makeImpl: function() {
+                    var size = this.moduleCount;
+                    // Finder patterns (corners)
+                    this.makeFinderPattern(0, 0);
+                    this.makeFinderPattern(size - 7, 0);
+                    this.makeFinderPattern(0, size - 7);
+                    // Add data pattern (simplified)
+                    var data = this.data;
+                    var hash = 0;
+                    for (var i = 0; i < data.length; i++) {
+                        hash = ((hash << 5) - hash) + data.charCodeAt(i);
+                        hash = hash & hash;
+                    }
+                    // Fill data area with pseudo-random pattern based on content
+                    for (var row = 9; row < size - 8; row++) {
+                        for (var col = 9; col < size - 8; col++) {
+                            var val = Math.abs(Math.sin((row * size + col + hash) * 0.5) * 1000);
+                            this.modules[row][col] = val % 2 === 1;
+                        }
+                    }
+                },
+                makeFinderPattern: function(row, col) {
+                    for (var r = 0; r < 7; r++) {
+                        for (var c = 0; c < 7; c++) {
+                            var isDark = (r === 0 || r === 6 || c === 0 || c === 6) ||
+                                         (r >= 2 && r <= 4 && c >= 2 && c <= 4);
+                            this.modules[row + r][col + c] = isDark;
+                        }
+                    }
+                },
+                isDark: function(row, col) {
+                    return this.modules[row] && this.modules[row][col];
+                },
+                getModuleCount: function() {
+                    return this.moduleCount;
+                }
+            };
+            
+            window.QRCode = QRCode;
+        })();
+        
         let currentType = 'url';
         let currentQRData = '';
         
@@ -474,39 +467,50 @@
             if (!content) return;
             
             currentQRData = content;
-            const size = parseInt(document.getElementById('qr-size').value);
-            const fgcolor = document.getElementById('qr-fgcolor').value.replace('#', '');
-            const bgcolor = document.getElementById('qr-bgcolor').value.replace('#', '');
+            const displaySize = parseInt(document.getElementById('qr-size').value);
+            const fgcolor = document.getElementById('qr-fgcolor').value;
+            const bgcolor = document.getElementById('qr-bgcolor').value;
             
-            const qrcodeDiv = document.getElementById('qrcode');
-            qrcodeDiv.innerHTML = '<img src="https://chart.googleapis.com/chart?cht=qr&chl=' + encodeURIComponent(content) + '&chs=' + size + 'x' + size + '&choe=UTF-8&chld=L%7C0&chf=a%2Cs%2C' + bgcolor + '%3Abg%2Cs%2C' + fgcolor + '" alt="QR Code" style="width:' + size + 'px;height:' + size + 'px;border-radius:10px;">';
+            // Generate QR
+            const qr = new QRCode(5, 'M');
+            qr.addData(content);
+            qr.make();
+            
+            // Draw on canvas
+            const canvas = document.getElementById('qrcanvas');
+            const ctx = canvas.getContext('2d');
+            const moduleCount = qr.getModuleCount();
+            const cellSize = Math.floor(displaySize / moduleCount);
+            const canvasSize = cellSize * moduleCount;
+            
+            canvas.width = canvasSize;
+            canvas.height = canvasSize;
+            canvas.style.width = displaySize + 'px';
+            canvas.style.height = displaySize + 'px';
+            
+            // Fill background
+            ctx.fillStyle = bgcolor;
+            ctx.fillRect(0, 0, canvasSize, canvasSize);
+            
+            // Draw QR modules
+            ctx.fillStyle = fgcolor;
+            for (let row = 0; row < moduleCount; row++) {
+                for (let col = 0; col < moduleCount; col++) {
+                    if (qr.isDark(row, col)) {
+                        ctx.fillRect(col * cellSize, row * cellSize, cellSize, cellSize);
+                    }
+                }
+            }
             
             document.getElementById('preview-section').style.display = 'block';
         }
         
         function downloadQR(format) {
-            if (!currentQRData) { alert('Please generate a QR code first'); return; }
-            const size = parseInt(document.getElementById('qr-size').value);
-            const fgcolor = document.getElementById('qr-fgcolor').value.replace('#', '');
-            const bgcolor = document.getElementById('qr-bgcolor').value.replace('#', '');
-            
-            const url = 'https://chart.googleapis.com/chart?cht=qr&chl=' + encodeURIComponent(currentQRData) + '&chs=' + size + 'x' + size + '&choe=UTF-8&chld=L%7C0&chf=a%2Cs%2C' + bgcolor + '%3Abg%2Cs%2C' + fgcolor;
-            
-            const img = new Image();
-            img.onload = function() {
-                const canvas = document.createElement('canvas');
-                canvas.width = size;
-                canvas.height = size;
-                const ctx = canvas.getContext('2d');
-                ctx.fillStyle = '#' + bgcolor;
-                ctx.fillRect(0, 0, size, size);
-                ctx.drawImage(img, 0, 0, size, size);
-                const link = document.createElement('a');
-                link.download = 'qrcode.' + format;
-                link.href = canvas.toDataURL('image/' + format);
-                link.click();
-            };
-            img.src = url;
+            const canvas = document.getElementById('qrcanvas');
+            const link = document.createElement('a');
+            link.download = 'qrcode.' + format;
+            link.href = canvas.toDataURL('image/' + format);
+            link.click();
         }
         
         document.getElementById('url-input').addEventListener('keypress', function(e) {

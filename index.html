@@ -6,7 +6,7 @@
     <title>Free QR Code Generator - Create QR Codes Online</title>
     <meta name="description" content="Free online QR code generator. Create QR codes for URLs, text, WiFi, vCards, and more. No registration required. Download as PNG.">
     <meta name="keywords" content="qr code generator, free qr code, create qr code, qr code maker, online qr generator">
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -464,10 +464,6 @@
         }
         
         function getQRContent() {
-            const size = parseInt(document.getElementById('qr-size').value);
-            const fgcolor = document.getElementById('qr-fgcolor').value;
-            const bgcolor = document.getElementById('qr-bgcolor').value;
-            
             let content = '';
             
             switch(currentType) {
@@ -523,34 +519,40 @@
                 return null;
             }
             
-            return { content, size, fgcolor, bgcolor };
+            return content;
         }
         
         function generateQR() {
-            const result = getQRContent();
-            if (!result) return;
+            const content = getQRContent();
+            if (!content) return;
             
-            const { content, size, fgcolor, bgcolor } = result;
             currentQRData = content;
+            const size = parseInt(document.getElementById('qr-size').value);
+            const fgcolor = document.getElementById('qr-fgcolor').value;
+            const bgcolor = document.getElementById('qr-bgcolor').value;
             
             const qrcodeDiv = document.getElementById('qrcode');
             qrcodeDiv.innerHTML = '';
             
-            QRCode.toCanvas(content, {
-                width: size,
-                margin: 2,
-                color: {
-                    dark: fgcolor,
-                    light: bgcolor
-                }
-            }, function(error, canvas) {
-                if (error) {
-                    alert('Error generating QR code: ' + error);
-                    return;
-                }
-                qrcodeDiv.appendChild(canvas);
-                document.getElementById('preview-section').style.display = 'block';
+            // Use qrcode-generator library
+            const qr = qrcode(0, 'M');
+            qr.addData(content);
+            qr.make();
+            
+            // Create SVG with colors
+            const svgString = qr.createSvgTag({
+                cellSize: Math.floor(size / qr.getModuleCount()),
+                margin: 4,
+                scalable: true
             });
+            
+            // Replace colors in SVG
+            const coloredSvg = svgString
+                .replace(/fill="#000000"/g, `fill="${fgcolor}"`)
+                .replace(/fill="#ffffff"/g, `fill="${bgcolor}"`);
+            
+            qrcodeDiv.innerHTML = coloredSvg;
+            document.getElementById('preview-section').style.display = 'block';
         }
         
         function downloadQR(format) {
@@ -563,46 +565,65 @@
             const fgcolor = document.getElementById('qr-fgcolor').value;
             const bgcolor = document.getElementById('qr-bgcolor').value;
             
-            if (format === 'png') {
-                QRCode.toCanvas(currentQRData, {
-                    width: size,
-                    margin: 2,
-                    color: {
-                        dark: fgcolor,
-                        light: bgcolor
-                    }
-                }, function(error, canvas) {
-                    if (error) return;
-                    
-                    const link = document.createElement('a');
-                    link.download = 'qrcode.png';
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
+            const qr = qrcode(0, 'M');
+            qr.addData(currentQRData);
+            qr.make();
+            
+            if (format === 'svg') {
+                let svgString = qr.createSvgTag({
+                    cellSize: Math.floor(size / qr.getModuleCount()),
+                    margin: 4
                 });
-            } else if (format === 'svg') {
-                QRCode.toString(currentQRData, {
-                    type: 'svg',
-                    width: size,
-                    margin: 2,
-                    color: {
-                        dark: fgcolor,
-                        light: bgcolor
+                svgString = svgString
+                    .replace(/fill="#000000"/g, `fill="${fgcolor}"`)
+                    .replace(/fill="#ffffff"/g, `fill="${bgcolor}"`);
+                
+                const blob = new Blob([svgString], { type: 'image/svg+xml' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.download = 'qrcode.svg';
+                link.href = url;
+                link.click();
+                URL.revokeObjectURL(url);
+            } else if (format === 'png') {
+                // Create canvas for PNG download
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                const cellSize = Math.floor(size / qr.getModuleCount());
+                const margin = 4;
+                const totalSize = cellSize * qr.getModuleCount() + margin * 2;
+                
+                canvas.width = totalSize;
+                canvas.height = totalSize;
+                
+                // Draw background
+                ctx.fillStyle = bgcolor;
+                ctx.fillRect(0, 0, totalSize, totalSize);
+                
+                // Draw QR code
+                ctx.fillStyle = fgcolor;
+                for (let row = 0; row < qr.getModuleCount(); row++) {
+                    for (let col = 0; col < qr.getModuleCount(); col++) {
+                        if (qr.isDark(row, col)) {
+                            ctx.fillRect(
+                                margin + col * cellSize,
+                                margin + row * cellSize,
+                                cellSize,
+                                cellSize
+                            );
+                        }
                     }
-                }, function(error, svg) {
-                    if (error) return;
-                    
-                    const blob = new Blob([svg], { type: 'image/svg+xml' });
-                    const url = URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.download = 'qrcode.svg';
-                    link.href = url;
-                    link.click();
-                    URL.revokeObjectURL(url);
-                });
+                }
+                
+                // Download
+                const link = document.createElement('a');
+                link.download = 'qrcode.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
             }
         }
         
-        // Auto-generate on input change
+        // Auto-generate on Enter
         ['url-input', 'text-input', 'wifi-ssid', 'wifi-password', 'vcard-name', 'vcard-phone', 'vcard-email', 'vcard-org', 'vcard-url', 'email-to', 'email-subject', 'email-body'].forEach(id => {
             const el = document.getElementById(id);
             if (el) {
